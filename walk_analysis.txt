@@ -1,0 +1,3 @@
+column = x,y coordinates 
+row = x,y coordinates for each second 
+batch = full time that one person usually walks. 
