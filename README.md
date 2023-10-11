@@ -1,2 +1,10 @@
 # Anyang_citizen  
 Predicting the walk pattern of anyang citizen 
+
+# TimesNet_Anomaly_detection  
+Assuming that majority of the data are normal, it reconstructs original data using autoencoder --> bottleneck --> decoder (Unsupervised form).  
+It uses normal MSE for the object function. 
+
+# Detecting anomalies  
+Assuming majority are normal it can be predicted that some data will not be reconstructed well, which will be selected as anomalies. Some rate of high loss will be selected as anomalies and will be labeled as anomalies.  
+
