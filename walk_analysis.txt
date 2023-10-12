@@ -1,3 +1,18 @@
 column = x,y coordinates 
 row = x,y coordinates for each second 
 batch = full time that one person usually walks. 
+
+Each batch 
+-------
+12  14 
+14  13
+13  16
+12  14 
+14  13
+13  16
+-------
+
+where the term between the rows will going to be whatever t that we set to. 
+
+Find loss for the whole batch 
+and if the total mean loss sort of spikes we label those as anomalies. 
