@@ -8,3 +8,12 @@ It uses normal MSE for the object function.
 # Detecting anomalies  
 Assuming majority are normal it can be predicted that some data will not be reconstructed well, which will be selected as anomalies. Some rate of high loss will be selected as anomalies and will be labeled as anomalies.  
 
+# Overall structure  
+-------------------
+23          45
+25          43
+23          47
+21          42 
+-------------------
+
+Where the intervals between the rows will going to be the time difference 
