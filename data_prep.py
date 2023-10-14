@@ -1,4 +1,3 @@
-!pip install tqdm
 import pandas as pd 
 import os
 import argparse
