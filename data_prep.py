@@ -44,7 +44,7 @@ def group_and_filter_by_cctv(df):
 
     return grouped
 
-def save_grouped_data_to_csv(directory, grouped_data):
+def save_grouped_data_to_csv(directory, df):
 
     # Group by 'cctv' column and save each group as a separate CSV file in the current directory
     for cctv_name, group_df in df.groupby('cctv'):
