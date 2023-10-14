@@ -45,9 +45,11 @@ def group_and_filter_by_cctv(df):
     return grouped
 
 def save_grouped_data_to_csv(directory, grouped_data):
-    # Save each grouped DataFrame as a separate CSV file in the given directory
-    for cctv_name, group_df in grouped_data.items():
-        group_df.to_csv(os.path.join(directory, f'cctv_{cctv_name}.csv'), index=False, mode='a', header=False)  # mode='a' appends data if file exists
+
+    # Group by 'cctv' column and save each group as a separate CSV file in the current directory
+    for cctv_name, group_df in df.groupby('cctv'):
+        group_df.to_csv(f'cctv_{cctv_name}.csv', index=False)
+
 
 def preprocess_and_store_files_in_directory(directory):
     # List all CSV files in the given directory
