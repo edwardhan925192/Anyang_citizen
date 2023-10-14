@@ -1,6 +1,11 @@
 # Anyang_citizen  
 Predicting the walk pattern of anyang citizen 
 
+# Data prep  
+```markdown
+!python data_prep.py '/path/to/your/2023_09_06_00_cctvTransData.csv'
+```
+
 # TimesNet_Anomaly_detection  
 Assuming that majority of the data are normal, it reconstructs original data using autoencoder --> bottleneck --> decoder (Unsupervised form).  
 It uses normal MSE for the object function. 
