@@ -65,12 +65,12 @@ def preprocess_and_store_files_in_directory(directory):
 
     return concatenated_df
 
-def get_largest_row(df):
-    df['time_fraction'] = df['time_fraction'].astype(float)
-    return df.sort_values('time_fraction', ascending=False).iloc[0]
+tqdm.pandas()
 
 def group_and_get_largest(df):
-    return df.groupby(['cctv', 'id', 'time_main']).apply(get_largest_row).reset_index(drop=True)
+    df['time_fraction'] = df['time_fraction'].astype(float)
+    idx = df.groupby(['cctv', 'id', 'time_main'])['time_fraction'].progress_apply(lambda x: x.idxmax())
+    return df.loc[idx].reset_index(drop=True)
 
 def add_person_count(df):
     df['person_count'] = df.groupby(['cctv', 'time_main']).transform('size')
@@ -78,7 +78,7 @@ def add_person_count(df):
 
 def process_dataframe(df):
     # Set the 'time_main' column as index
-    df.set_index('time_main', inplace=True)
+    df.set_index(['date', 'time_main'], inplace=True)
 
     # Pivot the dataframe such that each 'cctv' value becomes a column
     result = df.pivot(columns='cctv', values='person_count')
@@ -93,11 +93,10 @@ def process_dataframe(df):
     result.reset_index(inplace=True)
 
     return result
-
 # ======================== Testing for 2 hours only ========================= #
 
 def fill_missing_times(df):
-
+    # List of all possible time_main values for a single day
     all_times = [f"{hour:02}{minute:02}{second:02}"
                  for hour in range(24)
                  for minute in range(60)
@@ -106,28 +105,25 @@ def fill_missing_times(df):
     # Convert this list into a dataframe
     all_times_df = pd.DataFrame({'time_main': all_times})
 
-    # Merge with the original dataframe
-    merged_df = pd.merge(all_times_df, df, on='time_main', how='left')
+    # List to store dataframes for each date
+    dfs = []
 
-    # Fill NaN values with 0
-    merged_df.fillna(0, inplace=True)
+    # For each unique date in the dataframe
+    for date in df['date'].unique():
+        # Create a dataframe with the current date repeated for all time_main values
+        df_date = all_times_df.copy()
+        df_date['date'] = date
 
-    return merged_df
+        # Merge with the original dataframe to fill missing time_main values for the current date
+        merged_df = pd.merge(df_date, df[df['date'] == date], on=['date', 'time_main'], how='left')
 
-if __name__ == "__main__":
-    # Initialize argparse
-    parser = argparse.ArgumentParser(description="Process and save grouped CCTV data from a directory of CSV files.")
-    parser.add_argument("directory", type=str, help="Path to the directory containing CSV data files.")
+        # Fill NaN values with 0
+        merged_df.fillna(0, inplace=True)
 
-    # Parse the command-line arguments
-    args = parser.parse_args()
+        # Append to the list
+        dfs.append(merged_df)
 
-    concatenated_df = preprocess_and_store_files_in_directory(args.directory)
-    concatenated_df1 = group_and_get_largest(concatenated_df)
-    df2 = add_person_count(concatenated_df1)
-    df2 = df2.iloc[:,[0,-4,-3,-1]]
-    df3 = df2.drop_duplicates(subset=['cctv', 'date', 'time_main'], keep='first')
-    df4 = process_dataframe(df3)
-    df5 = fill_missing_times(df4)
+    # Concatenate the results for all dates
+    result = pd.concat(dfs, ignore_index=True)
 
-    df5.to_csv('density.csv',index = False)
+    return result
