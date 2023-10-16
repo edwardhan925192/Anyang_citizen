@@ -99,7 +99,7 @@ def process_dataframe(df):
 def fill_missing_times(df):
 
     all_times = [f"{hour:02}{minute:02}{second:02}"
-                 for hour in range(2)
+                 for hour in range(24)
                  for minute in range(60)
                  for second in range(60)]
 
