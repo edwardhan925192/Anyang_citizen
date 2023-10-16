@@ -127,3 +127,28 @@ def fill_missing_times(df):
     result = pd.concat(dfs, ignore_index=True)
 
     return result
+
+def main():
+    # Initialize the argument parser
+    parser = argparse.ArgumentParser(description="Process a directory of data files.")
+    
+    # Add the directory argument
+    parser.add_argument("directory", type=str, help="Path to the directory containing the data files.")
+    
+    # Parse the arguments
+    args = parser.parse_args()
+
+    # Execute the processing steps
+    concatenated_df = preprocess_and_store_files_in_directory(args.directory)
+    concatenated_df1 = group_and_get_largest(concatenated_df)
+    df2 = add_person_count(concatenated_df1)
+    df22 = df2.iloc[:,[0,-4,-3,-1]]
+    df3 = df22.drop_duplicates(subset=['cctv', 'date', 'time_main'], keep='first')
+    df4 = process_dataframe(df3)
+    df5 = fill_missing_times(df4)
+    
+    # Return or save the final dataframe as needed
+    df5.to_csv('density.csv',index = False)
+
+if __name__ == "__main__":
+    main()
